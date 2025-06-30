@@ -2,10 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "ts-node index.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
-    "prisma": "^6.10.1"
+    "prisma": "^6.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.0"
   }
 }

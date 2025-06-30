@@ -4,17 +4,22 @@ import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
 import cors from 'cors';
+import adminMenuRoutes from './routes/adminMenu';
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/api/admin/menu', adminMenuRoutes);
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/buyme';
-mongoose.connect(mongoUri).catch((err) => {
-  console.error('Mongo connection error:', err);
-});
+mongoose
+  .connect(mongoUri)
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => {
+    console.error('Mongo connection error:', err);
+  });
 
 interface IUser extends Document {
   email: string;

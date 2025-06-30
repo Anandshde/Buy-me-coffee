@@ -1,6 +1,6 @@
-const express = require('express');
-const MenuItem = require('../models/MenuItem');
-const adminAuth = require('../middleware/adminAuth');
+import express from 'express';
+import MenuItem from '../models/MenuItem';
+import adminAuth from '../middleware/adminAuth';
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.post('/', adminAuth, async (req, res) => {
     const item = new MenuItem(req.body);
     await item.save();
     res.status(201).json(item);
-  } catch (err) {
+  } catch (err: any) {
     res.status(400).json({ message: err.message });
   }
 });
@@ -21,7 +21,7 @@ router.patch('/:id', adminAuth, async (req, res) => {
     const item = await MenuItem.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!item) return res.status(404).json({ message: 'Not found' });
     res.json(item);
-  } catch (err) {
+  } catch (err: any) {
     res.status(400).json({ message: err.message });
   }
 });
@@ -34,13 +34,17 @@ router.delete('/:id', adminAuth, async (req, res) => {
     if (hard === 'true') {
       item = await MenuItem.findByIdAndDelete(req.params.id);
     } else {
-      item = await MenuItem.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
+      item = await MenuItem.findByIdAndUpdate(
+        req.params.id,
+        { active: false },
+        { new: true }
+      );
     }
     if (!item) return res.status(404).json({ message: 'Not found' });
     res.json(item);
-  } catch (err) {
+  } catch (err: any) {
     res.status(400).json({ message: err.message });
   }
 });
 
-module.exports = router;
+export default router;

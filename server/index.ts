@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import crypto from 'crypto';
 import cors from 'cors';
 import adminMenuRoutes from './routes/adminMenu';
+import dashboardRoutes from './routes/dashboard';
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api/admin/menu', adminMenuRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/buyme';
 mongoose

@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
-import dashboardRoutes from "./routes/dashboard";
+import authRoutes from "./routes/auth";
 
 dotenv.config();
 
@@ -12,14 +12,7 @@ const prisma = new PrismaClient();
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Routes
-app.use("/api/dashboard", dashboardRoutes);
-
-// Test route
-app.get("/", (req: Request, res: Response) => {
-  res.send("🚀 Buy Me Coffee server is running!");
-});
+app.use("/api/auth", authRoutes);
 
 // Start server
 const port = process.env.PORT || 8000;

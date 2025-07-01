@@ -1,12 +1,13 @@
 import express, { Request, Response } from "express";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
-
-import dashboardRoutes from "./routes/dashboard";
 import cors from "cors";
+import { PrismaClient } from "@prisma/client";
+import dashboardRoutes from "./routes/dashboard";
+
 dotenv.config();
 
 const app = express();
+const prisma = new PrismaClient();
 
 // Middleware
 app.use(cors());
@@ -15,15 +16,13 @@ app.use(express.json());
 // Routes
 app.use("/api/dashboard", dashboardRoutes);
 
-// MongoDB Connection
-const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/buyme";
-mongoose
-  .connect(mongoUri)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+// Test route
+app.get("/", (req: Request, res: Response) => {
+  res.send("🚀 Buy Me Coffee server is running!");
+});
 
 // Start server
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
-  console.log(`🚀 Server running on http://localhost:${port}`);
+  console.log(`✅ Server running on http://localhost:${port}`);
 });

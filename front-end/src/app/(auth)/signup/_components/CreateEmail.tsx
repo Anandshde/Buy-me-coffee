@@ -22,7 +22,11 @@ const formSchema = z.object({
     .min(8, { message: "Password must be at least 8 characters" }),
 });
 
-export const CreateEmail = ({ onSuccess }: { onSuccess: () => void }) => {
+export const CreateEmail = ({
+  onSuccess,
+}: {
+  onSuccess: (data: z.infer<typeof formSchema>) => void;
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,8 +37,7 @@ export const CreateEmail = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("Step 2: Email submitted", values);
-    // You can call your register API here, then:
-    onSuccess(); // ✅ call when email + password are valid
+    onSuccess(values); // ✅ Pass data up to parent
   };
 
   return (

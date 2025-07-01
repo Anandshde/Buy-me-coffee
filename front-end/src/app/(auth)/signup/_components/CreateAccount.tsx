@@ -18,10 +18,14 @@ import { Button } from "@/components/ui/button";
 const formSchema = z.object({
   username: z
     .string()
-    .min(8, { message: "Username must be at least 8 characters" }),
+    .min(4, { message: "Username must be at least 4 characters" }),
 });
 
-export const CreateAccount = ({ onNext }: { onNext: () => void }) => {
+export const CreateAccount = ({
+  onNext,
+}: {
+  onNext: (data: { username: string }) => void;
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,8 +34,8 @@ export const CreateAccount = ({ onNext }: { onNext: () => void }) => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("Step 1: Username submitted", values);
-    onNext(); // ✅ Move to next step
+    console.log("✅ Username:", values);
+    onNext(values); // 👉 parent рүү дамжуулна
   };
 
   return (

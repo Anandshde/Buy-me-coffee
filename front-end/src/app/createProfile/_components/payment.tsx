@@ -66,7 +66,7 @@ export default function PaymentForm() {
       return;
     }
 
-    const { expiryMonth, expiryYear, ...rest } = values;
+    const { expiryMonth, expiryYear, cvc, ...rest } = values;
 
     const expiryDate = new Date(Number(expiryYear), Number(expiryMonth) - 1, 1);
 

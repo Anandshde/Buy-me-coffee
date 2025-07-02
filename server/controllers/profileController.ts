@@ -1,26 +1,45 @@
 import { Request, Response } from "express";
 import { prisma } from "../utils/prisma";
+import { v2 as cloudinary } from "cloudinary";
+
+// Configure Cloudinary (or import from a config file)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
 
 export const createProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.userId;
-
     if (!userId) {
       res.status(401).json({ message: "Unauthorized: missing userId" });
       return;
     }
 
     const { name, about, socialMediaURL, successMessage } = req.body;
-
     const files = req.files as Record<string, Express.Multer.File[]>;
 
-    const avatarImage = files["avatarImage"]?.[0]?.path;
-    const backgroundImage = files["backgroundImage"]?.[0]?.path;
+    const avatarFile = files["avatarImage"]?.[0];
+    const backgroundFile = files["backgroundImage"]?.[0];
 
-    if (!avatarImage || !backgroundImage) {
-      res.status(400).json({ message: "Both images are required." });
+    if (!avatarFile) {
+      res.status(400).json({ message: "Profile image is required." });
       return;
     }
+
+    // Upload to Cloudinary
+    const uploadImage = async (file: Express.Multer.File) => {
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: "food-delivery",
+      });
+      return result.secure_url;
+    };
+
+    const avatarImage = await uploadImage(avatarFile);
+    const backgroundImage = backgroundFile
+      ? await uploadImage(backgroundFile)
+      : "";
 
     const profile = await prisma.profile.create({
       data: {
@@ -28,8 +47,8 @@ export const createProfile = async (req: Request, res: Response) => {
         about,
         socialMediaURL,
         successMessage,
-        avatarImage: `/uploads/${avatarImage}`,
-        backgroundImage: `/uploads/${backgroundImage}`,
+        avatarImage,
+        backgroundImage,
         userId,
       },
     });

@@ -4,6 +4,7 @@ import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 import authRoutes from "./routes/auth";
 import CreateRouter from "./routes/profile";
+import bankCardRouter from "./routes/bankCard";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", CreateRouter);
+app.use("/api/bank-card", bankCardRouter);
 
 // Start server
 const port = process.env.PORT || 8000;

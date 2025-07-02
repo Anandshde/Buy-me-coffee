@@ -23,6 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { api } from "@/lib/api";
 
 const formSchema = z.object({
   country: z.string().nonempty("Please select a country"),
@@ -58,9 +59,36 @@ export default function PaymentForm() {
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    console.log("✅ Payment Info:", values);
-    router.push("/dashboard"); // redirect to home
+  const onSubmit = async (values: FormValues) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("❌ No token found");
+      return;
+    }
+
+    const { expiryMonth, expiryYear, ...rest } = values;
+
+    const expiryDate = new Date(Number(expiryYear), Number(expiryMonth) - 1, 1);
+
+    try {
+      const res = await api.post(
+        "/bank-card",
+        {
+          ...rest,
+          expiryDate,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("✅ Card saved:", res.data);
+      router.push("/dashboard");
+    } catch (err) {
+      console.error("❌ Error saving card:", err);
+    }
   };
 
   return (

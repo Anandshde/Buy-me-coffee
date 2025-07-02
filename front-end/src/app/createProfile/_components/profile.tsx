@@ -3,10 +3,11 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRef, useState } from "react";
+import { Camera } from "lucide-react";
+import { api } from "@/lib/api";
 
 import { Input } from "@/components/ui/input";
-import { Camera } from "lucide-react";
-import { useRef, useState } from "react";
 import {
   Form,
   FormControl,
@@ -48,9 +49,26 @@ export const Profile = ({ onNext }: { onNext: () => void }) => {
 
   const handleClick = () => inputRef.current?.click();
 
-  const onSubmit = (values: ProfileFormData) => {
-    console.log("✅ Profile submitted:", values);
-    onNext();
+  const onSubmit = async (values: ProfileFormData) => {
+    const formData = new FormData();
+
+    formData.append("name", values.name);
+    formData.append("about", values.about);
+    formData.append("socialMediaURL", values.social);
+    formData.append("successMessage", "Thanks for your support!");
+
+    const avatarImage = inputRef.current?.files?.[0];
+    if (avatarImage) {
+      formData.append("avatarImage", avatarImage);
+    }
+
+    try {
+      const res = await api.post("/profile/create", formData);
+      console.log("✅ Profile created:", res.data);
+      onNext();
+    } catch (err) {
+      console.error("❌ Profile creation failed:", err);
+    }
   };
 
   return (

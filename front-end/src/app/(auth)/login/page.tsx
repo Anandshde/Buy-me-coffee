@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+
+import { api } from "@/lib/api";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -39,7 +40,7 @@ const Login = () => {
     try {
       console.log("Form submitted:", values);
 
-      const res = await axios.post("/api/login", values);
+      const res = await api.post("/auth/sign-in", values);
 
       router.push("/createProfile"); //
     } catch (error) {

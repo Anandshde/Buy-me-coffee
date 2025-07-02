@@ -5,7 +5,6 @@ import { createToken } from "../utils/jwt";
 import { prisma } from "../utils/prisma";
 
 dotenv.config();
-// const prisma = new PrismaClient();
 
 export const signUp = async (req: Request, res: Response) => {
   const { email, password, username } = req.body;

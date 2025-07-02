@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Loader2, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import { api } from "@/lib/api";
 
 type DashboardData = {
@@ -23,36 +23,44 @@ export default function DashboardHome() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("❌ No token found");
+      setLoading(false);
+      return;
+    }
+
     api
-      .get("/dashboard")
+      .get("/dashboard", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         setData(res.data);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error("❌ Failed to fetch dashboard:", err);
+        setLoading(false);
+      });
   }, []);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[300px]">
-        <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
-      </div>
-    );
-  }
 
   if (!data) return null;
 
   return (
     <div className="space-y-6">
       {/* Profile Box */}
+
       <div className="flex items-center gap-4">
         <Image
           src={data.avatar}
           alt="Avatar"
           width={48}
           height={48}
-          className="rounded-full"
+          className="rounded-full object-cover w-12 h-12"
         />
+
         <div>
           <p className="text-lg font-semibold">{data.username}</p>
           <p className="text-sm text-gray-500">

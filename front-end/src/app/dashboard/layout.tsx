@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 
 import { cn } from "@/lib/utils"; // optional
 import { HeaderComponent } from "./_components/header_2";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { label: "Home", href: "/dashboard/home" },

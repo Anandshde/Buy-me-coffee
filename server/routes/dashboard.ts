@@ -2,8 +2,8 @@ import express from "express";
 import { getDashboard } from "../controllers/dashboardController";
 import { tokenChecker } from "../middleware/tokenChecker";
 
-const router = express.Router();
+const dashboardRouter = express.Router();
 
-router.get("/", tokenChecker, getDashboard);
+dashboardRouter.get("/", tokenChecker, getDashboard);
 
-export default router;
+export default dashboardRouter;

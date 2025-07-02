@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth";
 import CreateRouter from "./routes/profile";
 import bankCardRouter from "./routes/bankCard";
 import dashboardRouter from "./routes/dashboard";
+import GetRouter from "./routes/public";
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+
+app.use("/api/view", GetRouter);
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", CreateRouter);
 app.use("/api/bank-card", bankCardRouter);

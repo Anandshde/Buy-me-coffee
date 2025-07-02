@@ -10,7 +10,7 @@ CreateRouter.post(
   tokenChecker,
   upload.fields([
     { name: "avatarImage", maxCount: 1 },
-    // { name: "backgroundImage", maxCount: 1 },
+    { name: "backgroundImage", maxCount: 1 },
   ]),
   createProfile
 );

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Loader2, Heart } from "lucide-react";
+import { api } from "@/lib/api";
 
 type DashboardData = {
   username: string;
@@ -22,12 +23,13 @@ export default function DashboardHome() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/dashboard")
-      .then((res) => res.json())
-      .then((json) => {
-        setData(json);
+    api
+      .get("/dashboard")
+      .then((res) => {
+        setData(res.data);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   if (loading) {

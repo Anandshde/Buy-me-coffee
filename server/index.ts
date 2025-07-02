@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 import authRoutes from "./routes/auth";
 import CreateRouter from "./routes/profile";
 import bankCardRouter from "./routes/bankCard";
+import dashboardRouter from "./routes/dashboard";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", CreateRouter);
 app.use("/api/bank-card", bankCardRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 // Start server
 const port = process.env.PORT || 8000;

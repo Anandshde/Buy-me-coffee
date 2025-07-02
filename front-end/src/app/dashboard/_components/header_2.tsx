@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,8 +11,23 @@ import {
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronDown } from "lucide-react";
+import { api } from "@/lib/api";
+
+type Profile = {
+  name: string;
+  avatarImage: string;
+};
 
 export const HeaderComponent = () => {
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    api
+      .get("/profile/me")
+      .then((res) => setProfile(res.data.profile as Profile))
+      .catch(() => setProfile(null));
+  }, []);
+
   return (
     <header className="flex justify-between  pl-5 pr-15 pt-6">
       <div className="flex items-center gap-2.5">
@@ -20,10 +38,14 @@ export const HeaderComponent = () => {
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2 outline-none">
             <Avatar className="w-10 h-10">
-              <AvatarImage src="/flow.png" alt="User avatar" />
-              <AvatarFallback>J</AvatarFallback>
+              <AvatarImage src={profile?.avatarImage ?? "/flow.png"} alt="User avatar" />
+              <AvatarFallback>
+                {profile?.name ? profile.name[0] : "U"}
+              </AvatarFallback>
             </Avatar>
-            <span className="text-lg font-semibold">Jake</span>
+            <span className="text-lg font-semibold">
+              {profile?.name ?? "User"}
+            </span>
             <ChevronDown className="w-4 h-4" />
           </DropdownMenuTrigger>
 

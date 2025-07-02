@@ -40,3 +40,26 @@ export const createProfile = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error", error: err });
   }
 };
+
+export const getProfile = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    const profile = await prisma.profile.findUnique({ where: { userId } });
+
+    if (!profile) {
+      res.status(404).json({ message: "Profile not found" });
+      return;
+    }
+
+    res.status(200).json({ profile });
+  } catch (err) {
+    console.error("❌ Error fetching profile:", err);
+    res.status(500).json({ message: "Server error", error: err });
+  }
+};

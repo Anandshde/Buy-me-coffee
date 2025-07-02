@@ -1,5 +1,5 @@
 import express from "express";
-import { createProfile } from "../controllers/profileController";
+import { createProfile, getProfile } from "../controllers/profileController";
 import { tokenChecker } from "../middleware/tokenChecker";
 import { upload } from "../middleware/upload";
 
@@ -14,5 +14,7 @@ CreateRouter.post(
   ]),
   createProfile
 );
+
+CreateRouter.get("/me", tokenChecker, getProfile);
 
 export default CreateRouter;

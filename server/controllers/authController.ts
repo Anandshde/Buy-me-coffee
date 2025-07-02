@@ -1,18 +1,14 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
+import { createToken } from "../utils/jwt";
+import { prisma } from "../utils/prisma";
 
-const prisma = new PrismaClient();
+dotenv.config();
+// const prisma = new PrismaClient();
 
 export const signUp = async (req: Request, res: Response) => {
   const { email, password, username } = req.body;
-  const existingUsername = await prisma.user.findUnique({
-    where: { username },
-  });
-  if (existingUsername) {
-    res.status(400).json({ message: "Username already taken" });
-    return;
-  }
 
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -31,9 +27,52 @@ export const signUp = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json({ user: newUser });
+    const token = createToken({ userId: newUser.id });
+
+    res.status(201).json({
+      message: "User created successfully",
+      token,
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        username: newUser.username,
+      },
+    });
   } catch (err) {
-    console.error("Signup error:", err);
+    console.error("❌ Signup error:", err);
     res.status(500).json({ error: "Signup failed", details: err });
+  }
+};
+
+export const signIn = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
+    }
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
+    }
+
+    const token = createToken({ userId: user.id });
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      },
+    });
+  } catch (err) {
+    console.error("❌ Login error:", err);
+    res.status(500).json({ error: "Login failed", details: err });
   }
 };

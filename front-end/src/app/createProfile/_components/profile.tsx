@@ -62,12 +62,27 @@ export const Profile = ({ onNext }: { onNext: () => void }) => {
       formData.append("avatarImage", avatarImage);
     }
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("❌ No token found");
+      return;
+    }
+
     try {
-      const res = await api.post("/profile/create", formData);
+      const res = await api.post("/profile/create", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       console.log("✅ Profile created:", res.data);
       onNext();
-    } catch (err) {
-      console.error("❌ Profile creation failed:", err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("❌ Profile creation failed:", err.message);
+      } else {
+        console.error("❌ Unexpected error:", err);
+      }
     }
   };
 

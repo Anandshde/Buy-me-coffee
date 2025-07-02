@@ -33,7 +33,9 @@ const SignUp = () => {
       });
 
       console.log("✅ Registered:", res.data);
-      router.push("/login");
+      const { token } = res.data;
+      localStorage.setItem("token", token);
+      router.push("/createProfile"); // skip login, go to profile
     } catch (err: any) {
       setError(err.response?.data?.message || "Something went wrong");
     }

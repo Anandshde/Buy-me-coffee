@@ -24,8 +24,11 @@ export const addBankCard = async (req: Request, res: Response) => {
       expiryDate: string;
     } = req.body;
 
-    const bankCard = await prisma.bankCard.create({
-      data: {
+    const existingCard = await prisma.bankCard.findUnique({ where: { userId } });
+
+    const bankCard = await prisma.bankCard.upsert({
+      where: { userId },
+      create: {
         country,
         firstName,
         lastName,
@@ -33,9 +36,19 @@ export const addBankCard = async (req: Request, res: Response) => {
         expiryDate: new Date(expiryDate),
         userId,
       },
+      update: {
+        country,
+        firstName,
+        lastName,
+        cardNumber,
+        expiryDate: new Date(expiryDate),
+      },
     });
 
-    res.status(201).json({ message: "Bank card added", bankCard });
+    res.status(existingCard ? 200 : 201).json({
+      message: existingCard ? "Bank card updated" : "Bank card added",
+      bankCard,
+    });
   } catch (err) {
     console.error("❌ Error saving card:", err);
     res.status(500).json({ message: "Server error", error: err });

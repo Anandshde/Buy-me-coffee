@@ -76,7 +76,13 @@ export default function DashboardHome() {
       <div className="border rounded-lg p-6 bg-white shadow-sm">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Earnings</h2>
-          <select className="border rounded px-2 py-1 text-sm">
+          <label htmlFor="earnings-period" className="sr-only">
+            Select earnings period
+          </label>
+          <select
+            id="earnings-period"
+            className="border rounded px-2 py-1 text-sm"
+          >
             <option>Last 30 days</option>
           </select>
         </div>
